@@ -6,15 +6,8 @@
   const fine = window.matchMedia && window.matchMedia("(pointer: fine)").matches;
   if (!fine) return;
 
-  const WORDS = {
-    en: ["cat", "dog", "sun", "star", "game", "play", "jump", "cool", "moon", "fire", "wind",
-      "gold", "blue", "fish", "bird", "tree", "cake", "milk", "rain", "snow", "king", "love",
-      "hero", "rock", "note", "time", "cloud", "light", "happy", "apple", "water", "music",
-      "tiger", "robot", "sweet", "brave", "pixel", "space", "candy", "ghost"],
-    ko: ["사과", "바다", "하늘", "구름", "사랑", "친구", "학교", "가방", "노래", "여행", "토끼",
-      "포도", "딸기", "김밥", "라면", "우유", "연필", "의자", "시계", "기차", "우주", "무지개",
-      "고양이", "강아지", "호랑이", "바나나", "자동차", "비행기", "눈사람", "선물", "행복", "나무"],
-  };
+  // 단어는 외부 데이터(src/data/words.js)에서 가져옴
+  const WORDS = () => (window.WORDS_DATA || { en: [], ko: [] });
 
   let inputEl = null, current = null;
   function ensureInput() {
@@ -86,7 +79,7 @@
       }
 
       function spawn() {
-        const avail = WORDS[lang].filter((t) => !words.some((o) => o.text === t));  // 화면에 없는 단어만
+        const avail = WORDS()[lang].filter((t) => !words.some((o) => o.text === t));  // 화면에 없는 단어만
         if (!avail.length) return;
         const text = avail[Math.floor(api.rnd(avail.length))];
         ctx.font = FS + "px monospace";
