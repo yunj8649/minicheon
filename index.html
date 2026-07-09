@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="미니천국" />
+<meta name="theme-color" content="#1a1228" />
+
+<title>미니 천국 — 원터치 미니게임 14종</title>
+<meta name="description" content="한 손으로 즐기는 귀여운 도트 미니게임 14종! 별 모아 캐릭터 수집, 친구랑 대결·룰렛까지. 설치 없이 바로 플레이." />
+
+<!-- 공유 미리보기 (OG / 트위터) — 배포 후 아래 URL을 실제 주소로 교체 -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="미니 천국 — 원터치 미니게임 14종" />
+<meta property="og:description" content="설치 없이 바로 즐기는 귀여운 미니게임 모음. 별 모아 캐릭터 수집, 친구랑 대결·룰렛!" />
+<meta property="og:image" content="https://yunjeong-reco.github.io/minicheon/og-image.png" />
+<meta property="og:url" content="https://yunjeong-reco.github.io/minicheon/" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<link rel="manifest" href="manifest.webmanifest" />
+
+<!-- 방문자 측정 (GoatCounter — 무료·쿠키없음). 계정 만들고 YOURCODE 를 본인 코드로 교체하면 활성화. -->
+<script data-goatcounter="https://YOURCODE.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    width: 100%; height: 100%; background: #05040a; overflow: hidden;
+    font-family: -apple-system, "Apple SD Gothic Neo", sans-serif;
+    user-select: none; -webkit-user-select: none; touch-action: manipulation;
+  }
+  /* 우주 배경 (PC에선 게임 주변을 채움, 모바일은 캔버스에 대부분 가려짐) */
+  #space {
+    position: fixed; inset: -5%; z-index: 0; pointer-events: none;
+    background: #05040a url("space-bg.webp") center / cover no-repeat;
+    animation: drift 90s ease-in-out infinite alternate;
+  }
+  @keyframes drift {
+    from { transform: scale(1.05) translate(-1.2%, -0.8%); }
+    to   { transform: scale(1.09) translate(1.2%,  0.8%); }
+  }
+  #wrap { position: fixed; inset: 0; z-index: 1; display: flex; align-items: center; justify-content: center; }
+  canvas {
+    image-rendering: pixelated; image-rendering: crisp-edges;
+    background: #1a1228;
+    box-shadow: 0 0 0 2px #3a2f5e, 0 0 24px rgba(150,120,255,.35), 0 16px 50px rgba(0,0,0,.65);
+    border-radius: 8px; touch-action: none;
+  }
+  #scan {
+    position: fixed; inset: 0; pointer-events: none; z-index: 10; mix-blend-mode: multiply;
+    background: repeating-linear-gradient(to bottom,
+      rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,.12) 3px, rgba(0,0,0,.12) 4px);
+  }
+</style>
+</head>
+<body>
+  <div id="space"></div>
+  <div id="wrap"><canvas id="game"></canvas></div>
+  <div id="scan"></div>
+
+  <!-- 메타 진행(별·캐릭터수집·도전과제) 모듈 -->
+  <script src="src/meta.js"></script>
+  <!-- 운빨 대결: 구슬 레이스 룰렛 -->
+  <script src="src/roulette.js"></script>
+  <!-- 수익화(광고/결제) 모듈: 네이티브 앱에서만 실제 광고, 웹에선 무해하게 우회 -->
+  <script src="src/monetization.js"></script>
+  <!-- 엔진(셸)을 먼저 로드해 MG 레지스트리 준비 -->
+  <script src="src/engine.js"></script>
+  <!-- 게임들: 파일 추가 시 이 줄만 늘리면 허브에 자동 등록됨 -->
+  <script src="src/games/kongjump.js"></script>
+  <script src="src/games/timing.js"></script>
+  <script src="src/games/whack.js"></script>
+  <script src="src/games/dodge.js"></script>
+  <script src="src/games/reflex.js"></script>
+  <script src="src/games/match.js"></script>
+  <script src="src/games/rhythm.js"></script>
+  <script src="src/games/masher.js"></script>
+  <script src="src/games/simon.js"></script>
+  <script src="src/games/pop.js"></script>
+  <script src="src/games/snake.js"></script>
+  <script src="src/games/stack.js"></script>
+  <script src="src/games/juggle.js"></script>
+  <script src="src/games/knife.js"></script>
+</body>
+</html>
