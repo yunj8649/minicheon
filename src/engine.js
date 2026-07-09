@@ -265,7 +265,11 @@ function selectGame(g) {
   SOUND.select();
 }
 function startPlay() { score = 0; particles.length = 0; inst.reset(); state = S.PLAY; }
-function gotoHub() { state = S.HUB; current = null; inst = null; battle = null; pickForBattle = false; bgmSuppressed = false; SOUND.select(); }
+function gotoHub() {
+  state = S.HUB; current = null; inst = null; battle = null; pickForBattle = false; bgmSuppressed = false;
+  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();  // 타자게임 숨은 입력창 포커스 해제
+  SOUND.select();
+}
 
 // ---- 친구 대결 (같은 폰 2인 번갈아) ----
 function startBattle(def) {
