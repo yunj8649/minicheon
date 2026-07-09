@@ -261,7 +261,7 @@ function selectGame(g) {
   inst = g.create(api);
   score = 0; particles.length = 0; shake = 0; flash = 0; bgmSuppressed = false;
   inst.reset();
-  state = S.READY;
+  state = g.skipReady ? S.PLAY : S.READY;   // 타자게임처럼 자체 시작화면이 있으면 READY 생략
   SOUND.select();
 }
 function startPlay() { score = 0; particles.length = 0; inst.reset(); state = S.PLAY; }

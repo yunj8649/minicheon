@@ -34,6 +34,7 @@
     title: "타자 게임",
     subtitle: "TYPING",
     accent: "#7CFFA0",
+    skipReady: true,        // 엔진 "탭하면 시작" 건너뛰고 바로 언어 선택 화면으로
     how: "떨어지는 단어 타이핑 · 시작할 때 한/영 선택 (PC 전용)",
     icon(api, x, y, t) {
       const on = Math.floor(t * 0.1) % 2;
