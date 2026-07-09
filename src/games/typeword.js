@@ -138,10 +138,12 @@
           langBtn(KO_BTN, "한글", lang === "ko");
           langBtn(EN_BTN, "ENG", lang === "en");
           if (api.blink()) api.text("한글 / ENG 를 탭하면 시작!", VW / 2, 240, 10, "#fff");
+          api.text("ESC = 나가기", VW / 2, 290, 8, "rgba(255,255,255,.4)");
           return;
         }
         api.px(0, BOTTOM, VW, 2, "rgba(255,91,110,.5)");        // 위험선
         api.text("평균 " + (startT ? kpm() : "--") + " 타/분", 6, 20, 9, "#9fffc0", "left");
+        api.text("ESC 나가기", VW - 6, 20, 8, "rgba(255,255,255,.45)", "right");
         ctx.font = FS + "px monospace"; ctx.textBaseline = "alphabetic";
         for (const w of words) {
           const startX = w.x - w.w / 2;

@@ -122,6 +122,7 @@
           langBtn(KO_BTN, "한글", lang === "ko");
           langBtn(EN_BTN, "ENG", lang === "en");
           if (api.blink()) api.text("한글 / ENG 를 탭하면 시작!", VW / 2, 240, 10, "#fff");
+          api.text("ESC = 나가기", VW / 2, 290, 8, "rgba(255,255,255,.4)");
           return;
         }
 
@@ -134,17 +135,18 @@
 
         // 문장 (글자별 색: 맞음=초록, 틀림=빨강, 안침=회색, 현재위치 캐럿)
         ctx.font = FS + "px monospace"; ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
-        let x = 14, y = 140; const lh = 22;
+        let x = 14, y = 146; const lh = 30;
         for (let i = 0; i < target.length; i++) {
           const ch = target[i], cw = ctx.measureText(ch).width;
           if (x + cw > VW - 14) { x = 14; y += lh; }
           if (i === buffer.length) api.px(x, y - FS + 2, 2, FS, "#ffd84d");   // 캐럿
-          let col = "#7a8a9e";
-          if (i < buffer.length) col = buffer[i] === ch ? "#7CFFA0" : "#ff5b6e";
-          ctx.fillStyle = col; ctx.fillText(ch, x, y);
+          const wrong = i < buffer.length && buffer[i] !== ch;
+          ctx.fillStyle = i < buffer.length ? (wrong ? "#ff5b6e" : "#7CFFA0") : "#7a8a9e";
+          ctx.fillText(ch, x, y);
+          if (wrong) { ctx.fillStyle = "#ff8a3d"; ctx.fillText(buffer[i], x, y - FS - 3); }  // 잘못 친 글자를 위에 표시
           x += cw;
         }
-        api.text("완성 " + doneCount + "문장 · 정확히 따라 치세요", VW / 2, VH - 16, 8, "rgba(255,255,255,.45)");
+        api.text("완성 " + doneCount + "문장 · 위 주황색 = 오타 · ESC 나가기", VW / 2, VH - 14, 8, "rgba(255,255,255,.5)");
       }
 
       function overInfo() { return finalKpm ? "평균 " + finalKpm + " 타/분" : ""; }

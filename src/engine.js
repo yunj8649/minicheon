@@ -353,9 +353,9 @@ canvas.addEventListener("wheel", (e) => {
   hubScroll = Math.max(0, Math.min(hubScrollMax(), hubScroll + e.deltaY));
 }, { passive: false });
 window.addEventListener("keydown", (e) => {
-  if (state === S.PLAY && inst && inst.key) { inst.key(e); return; }   // 타자게임 등 키보드 입력 전달
+  if (e.code === "Escape") { if (state !== S.HUB) gotoHub(); return; }   // ESC = 언제든 허브로 나가기
+  if (state === S.PLAY && inst && inst.key) { inst.key(e); return; }     // 타자게임 등 키보드 입력 전달
   if (e.code === "Space" || e.code === "ArrowUp") { e.preventDefault(); onPress({ x: VW / 2, y: VH / 2 }); }
-  if (e.code === "Escape" && state !== S.HUB && state !== S.PLAY) gotoHub();
 });
 
 // ---- 공통 업데이트 ----
