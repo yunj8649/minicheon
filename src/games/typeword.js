@@ -46,7 +46,8 @@
       const FS = 13, TOP = 62, BOTTOM = VH - 40;
       const KO_BTN = { x: VW / 2 - 66, y: 150, w: 60, h: 48 };
       const EN_BTN = { x: VW / 2 + 6, y: 150, w: 60, h: 48 };
-      let phase, words, spawnT, fallSpeed, buffer, lang;
+      let phase, words, spawnT, fallSpeed, buffer, lang, playing;
+      let keystrokes, startT;    // 타자속도(타/분) 측정
 
       const ctrl = {
         onInput(val) {
@@ -66,15 +67,21 @@
       function inRect(p, r) { return p.x >= r.x && p.x <= r.x + r.w && p.y >= r.y && p.y <= r.y + r.h; }
 
       function reset() {                    // 들어오면 언어 선택 화면
-        phase = "choose"; words = []; buffer = "";
+        phase = "choose"; words = []; buffer = ""; playing = false;
         lang = localStorage.getItem("type_lang") || "ko";
         current = ctrl; ensureInput();
       }
       function begin(l) {                    // 언어 선택 → 시작
         lang = l; localStorage.setItem("type_lang", l);
         phase = "play"; words = []; buffer = ""; spawnT = 20; fallSpeed = 0.42;
+        keystrokes = 0; startT = 0;
         const el = ensureInput(); el.value = ""; el.focus();
         api.sound.select();
+      }
+      function kpm() {                        // 분당 타수(평균)
+        if (!startT || keystrokes < 1) return 0;
+        const mins = (performance.now() - startT) / 60000;
+        return mins > 0 ? Math.round(keystrokes / mins) : 0;
       }
 
       function spawn() {
@@ -87,6 +94,7 @@
       }
 
       function update() {
+        playing = true;                      // 엔진 PLAY 상태 표시 (READY와 겹침 방지)
         if (phase !== "play") return;
         fallSpeed = Math.min(1.0, 0.42 + api.score / 110);
         spawnT--;
@@ -97,7 +105,15 @@
         }
       }
 
-      function key() { /* 실제 입력은 숨은 input이 받음 (스페이스=점프 등 차단용) */ }
+      function key(e) {
+        // 실제 글자 입력은 숨은 input이 받음. 여기선 타수만 카운트(한글 조합키 포함).
+        if (phase !== "play" || !e) return;
+        const printable = e.key && e.key.length === 1 && e.key !== " ";
+        if (printable || e.keyCode === 229) {   // 229 = IME 조합 중 키다운(한글 자모)
+          keystrokes++;
+          if (!startT) startT = performance.now();
+        }
+      }
 
       function press(p) {
         if (phase === "choose") {
@@ -120,6 +136,7 @@
 
       function render() {
         bg();
+        if (!playing) return;                 // READY 단계는 엔진 오버레이만 그림 (겹침 방지)
         if (phase === "choose") {
           api.text("타자 게임", VW / 2, 90, 20, "#7CFFA0");
           api.text("언어를 선택하세요", VW / 2, 120, 10, "rgba(255,255,255,.6)");
@@ -129,6 +146,7 @@
           return;
         }
         api.px(0, BOTTOM, VW, 2, "rgba(255,91,110,.5)");        // 위험선
+        api.text("평균 " + (startT ? kpm() : "--") + " 타/분", 6, 18, 8, "rgba(255,255,255,.75)", "left");
         ctx.font = FS + "px monospace"; ctx.textBaseline = "alphabetic";
         for (const w of words) {
           const startX = w.x - w.w / 2;
