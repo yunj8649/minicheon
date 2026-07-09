@@ -493,10 +493,11 @@ function renderGame() {
     if (battle) {
       renderBattleOver();
     } else {
-      text("GAME OVER", VW / 2, 144, 18, PAL.bad);
-      text("점수  " + score, VW / 2, 178, 12, PAL.text);
-      text("최고  " + best, VW / 2, 198, 12, score >= best ? current.accent : PAL.textDim);
-      if (score >= best && score > 0) text("★ 신기록! ★", VW / 2, 220, 10, current.accent);
+      text("GAME OVER", VW / 2, 142, 18, PAL.bad);
+      text("점수  " + score, VW / 2, 174, 12, PAL.text);
+      text("최고  " + best, VW / 2, 193, 12, score >= best ? current.accent : PAL.textDim);
+      if (inst && inst.overInfo) { const oi = inst.overInfo(); if (oi) text(oi, VW / 2, 212, 11, "#7CFFA0"); }   // 게임별 추가정보(예: 평균 타/분)
+      if (score >= best && score > 0) text("★ 신기록! ★", VW / 2, 229, 9, current.accent);
       // 광고 보고 점수 2배 버튼
       if (!rewardUsed && score > 0) {
         const b = REWARD_BTN;

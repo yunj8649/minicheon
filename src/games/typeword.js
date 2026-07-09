@@ -48,7 +48,7 @@
       const KO_BTN = { x: VW / 2 - 66, y: 150, w: 60, h: 48 };
       const EN_BTN = { x: VW / 2 + 6, y: 150, w: 60, h: 48 };
       let phase, words, spawnT, fallSpeed, buffer, lang, playing;
-      let keystrokes, startT;    // 타자속도(타/분) 측정
+      let keystrokes, startT, finalKpm;    // 타자속도(타/분) 측정
 
       const ctrl = {
         onInput(val) {
@@ -75,7 +75,7 @@
       function begin(l) {                    // 언어 선택 → 시작
         lang = l; localStorage.setItem("type_lang", l);
         phase = "play"; words = []; buffer = ""; spawnT = 20; fallSpeed = 0.42;
-        keystrokes = 0; startT = 0;
+        keystrokes = 0; startT = 0; finalKpm = 0;
         const el = ensureInput(); el.value = ""; el.focus();
         api.sound.select();
       }
@@ -86,8 +86,9 @@
       }
 
       function spawn() {
-        const list = WORDS[lang];
-        const text = list[Math.floor(api.rnd(list.length))];
+        const avail = WORDS[lang].filter((t) => !words.some((o) => o.text === t));  // 화면에 없는 단어만
+        if (!avail.length) return;
+        const text = avail[Math.floor(api.rnd(avail.length))];
         ctx.font = FS + "px monospace";
         const w = ctx.measureText(text).width, half = w / 2;
         const x = api.rnd(10 + half, VW - 10 - half);
@@ -102,7 +103,7 @@
         if (spawnT <= 0) { spawn(); spawnT = Math.max(55, 100 - api.score * 0.6); }
         for (const w of words) {
           w.y += fallSpeed;
-          if (w.y >= BOTTOM) { if (inputEl) inputEl.blur(); api.shake(7); api.flash(0.5); api.sound.die(); api.gameOver(); return; }
+          if (w.y >= BOTTOM) { finalKpm = kpm(); if (inputEl) inputEl.blur(); api.shake(7); api.flash(0.5); api.sound.die(); api.gameOver(); return; }
         }
       }
 
@@ -147,7 +148,7 @@
           return;
         }
         api.px(0, BOTTOM, VW, 2, "rgba(255,91,110,.5)");        // 위험선
-        api.text("평균 " + (startT ? kpm() : "--") + " 타/분", 6, 18, 8, "rgba(255,255,255,.75)", "left");
+        api.text("평균 " + (startT ? kpm() : "--") + " 타/분", 6, 20, 9, "#9fffc0", "left");
         ctx.font = FS + "px monospace"; ctx.textBaseline = "alphabetic";
         for (const w of words) {
           const startX = w.x - w.w / 2;
@@ -163,7 +164,9 @@
         api.text(buffer ? "▸ " + buffer : "타이핑하세요", VW / 2, VH - 14, 12, buffer ? "#ffd84d" : "rgba(255,255,255,.4)");
       }
 
-      return { reset, update, render, press, key };
+      function overInfo() { return finalKpm ? "평균 " + finalKpm + " 타/분" : ""; }
+
+      return { reset, update, render, press, key, overInfo };
     },
   });
 })();
