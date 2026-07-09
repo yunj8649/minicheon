@@ -18,7 +18,16 @@ let scale = 1;
 
 function fit() {
   const maxW = window.innerWidth, maxH = window.innerHeight;
-  scale = Math.max(1, Math.floor(Math.min(maxW / VW, maxH / VH)));
+  // 모바일(좁은 폭·터치)에선 화면을 꽉 채우도록 분수 배율(잘림 없이 contain),
+  // PC에선 기존처럼 정수 배율 + 배경 여백으로 레트로 느낌 유지.
+  const isMobile = maxW < 600 || window.matchMedia("(pointer: coarse)").matches;
+  if (isMobile) {
+    scale = Math.min(maxW / VW, maxH / VH);
+    document.body.classList.add("mobile");
+  } else {
+    scale = Math.max(1, Math.floor(Math.min(maxW / VW, maxH / VH)));
+    document.body.classList.remove("mobile");
+  }
   canvas.width = VW; canvas.height = VH;
   canvas.style.width = VW * scale + "px";
   canvas.style.height = VH * scale + "px";
